@@ -22,6 +22,16 @@ exports.addProductsToCart = async (req, res) => {
   const products = await Product.findById(productId);
   const cart = await Cart.findById(cartId);
 
+  for (let i = 0; i < cart.products.length; i++) {
+    if (cart.products[i].id === productId) {
+      cart.products[i].amount++;
+      cart.totalAmount += cart.products[i].price;
+
+      await cart.save();
+      return res.json(cart);
+    }
+  }
+
   cart.products.push(products);
 
   cart.totalAmount += products.price;
@@ -29,7 +39,8 @@ exports.addProductsToCart = async (req, res) => {
   await cart.save();
   console.log(cart);
 
-//   return res.send(cart);
-
-  return res.setHeader('Location', `http://localhost:4000/api/v1/products/${cart._id}`).status(201).json(cart)
+  return res
+    .setHeader("Location", `http://localhost:4000/api/v1/products/${cart._id}`)
+    .status(201)
+    .json(cart);
 };
