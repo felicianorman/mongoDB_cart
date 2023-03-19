@@ -1,7 +1,9 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-const path = require("path");
+
+const { errorMiddleware } = require("./middleware/errorMiddleware");
+const { notFoundMiddleware } = require("./middleware/notFoundMiddleware");
 
 const cartRouter = require("./router/cartRouter");
 const productRouter = require("./router/productRouter");
@@ -13,6 +15,9 @@ const port = process.env.PORT || 4000;
 
 app.use("/api/v1/carts", cartRouter);
 app.use("/api/v1/products", productRouter);
+
+app.use(errorMiddleware);
+app.use(notFoundMiddleware);
 
 async function run() {
   try {

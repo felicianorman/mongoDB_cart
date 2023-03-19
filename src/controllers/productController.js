@@ -1,12 +1,12 @@
 const Cart = require("../models/Cart");
 const Product = require("../models/Product");
-const { NotFoundError, BadRequestError } = require('../utils/error')
+const { NotFoundError,BadRequestError } = require("../utils/error");
 
 exports.getAllProducts = async (req, res) => {
   try {
     const products = await Product.find();
 
-    if (!products) throw new NotFoundError("Could not find products");
+    if (!products) throw new NotFoundError("Cannot find products");
     return res.send(products);
   } catch (error) {
     return res.status(error.statusCode || 500).json(error.message);
@@ -73,7 +73,7 @@ exports.deleteProduct = async (req, res) => {
 
     const cart = await Cart.findById(cartId);
 
-    if (!cart) return new BadRequestError("You must provde cartId");
+    if (!cart || !product) return new BadRequestError("You must provde cartId");
 
     for (let i = 0; i < cart.products.length; i++) {
       if (cart.products[i].id === productId) {
